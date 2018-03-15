@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="bigbox">
+        <div class="small">
+            <div class="contenr">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</body>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+
+    }
+
+    .bigbox {
+        width: 100%;
+        height: 100%;
+        background-color: gray;
+        position: fixed;
+    }
+
+    .small {
+        width: 40px;
+        height: 40px;
+        background-color: #FFF;
+        border-radius: 50%;
+        position: relative;
+
+    }
+
+    .contenr {
+        width: 200px;
+        height: 200px;
+        background-color: yellowgreen;
+        border-radius: 20px 20px 20px 20px;
+        position: absolute;
+        top: 0;
+        display: none;
+
+    }
+
+    li {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        display: block;
+        margin: 10px;
+        float: left;
+        list-style: none;
+    }
+</style>
+
+</html>
+<script src="./jquery-1.12.4.js"></script>
+<script>
+    $(function () {
+        $('.small').click(function (e) {
+            $('.contenr').show()
+            e.stopPropagation();
+        })
+        $('.bigbox').click(function () {
+            $('.contenr').hide()
+        })
+
+        var ifBool = false;
+        var small = document.querySelector('.small');
+        var bigbox = document.querySelector('.bigbox');
+        // var startX = startY = moveX = moveY = distanceX = distanceY = 0;
+        // var currentX = currentY = 0;
+        // small.addEventListener('touchstart', function (e) {
+        // 	// 获取开始的X的位置
+        // 	startX = e.touches[0].clientX;
+        // 	// 获取开始的Y的位置
+        // 	startY = e.touches[0].clientY;
+        // });
+        // small.addEventListener('touchmove', function (e) {
+        // 	// console.log(e.touches[0].clientX);
+        // 	// 获取滑动中的X的位置
+        // 	moveX = e.touches[0].clientX;
+        // 	// 获取滑动中的Y的位置
+        // 	moveY = e.touches[0].clientY;
+        // 	// 计算水平方向滑动距离X
+        // 	distanceX = moveX - startX;
+        // 	// 计算垂直方向滑动的距离Y
+        // 	distanceY = moveY - startY;
+        // 	// 给div设置位移 滑动的X和Y的距离 下一次滑动的时候加上之前的滑动距离	X 和 Y
+        // 	small.style.transform = 'translate('+(currentX+distanceX)+'px,'+(currentY+distanceY)+'px)';
+        // });
+        // small.addEventListener('touchend', function () {
+        // 	// 记录之前滑动的距离X
+        // 	currentX += distanceX;
+        // 	// 记录之前滑动的距离Y
+        // 	currentY += distanceY;
+        // });
+        var start = function (e) {
+          
+            ifBool = true;
+            console.log("鼠标按下")
+        };
+        var move = function (e) {
+            console.log("鼠标拖动")
+            if (ifBool) {
+                if (!e.touches) {
+                    var x = e.clientX;
+                    var Y = e.clientY
+                } else {
+                    var x = e.touches[0].pageX;
+                    var Y = e.touches[0].pageY;
+                }
+               
+                var bigbox_left = getPosition(bigbox).left;
+                var bigbox_top = getPosition(bigbox).top;
+                var small_left = x - (bigbox_left); 
+                var small_top = Y - (bigbox_left);
+
+               
+                            if(small_left<0){
+                                small_left=0;
+                            };
+                            if(small_left>=bigbox.offsetLeft+bigbox.clientWidth-small.clientWidth){
+                                small_left=bigbox.offsetLeft+bigbox.clientWidth-small.clientWidth;
+                            };
+                              // 小于一半回到0
+                            // if(small_left<=bigbox.offsetLeft+(bigbox.clientWidth-small.clientWidth)/2){
+                            //     small_left=0;
+                            // };
+                          
+                            if(small_top>=bigbox.offsetTop+bigbox.clientHeight-small.clientHeight){
+                                 small_top=bigbox.offsetTop+bigbox.clientHeight-small.clientHeight;
+                            }; 
+                            
+                            if(small_top<0){
+                                small_top=0;
+                            }
+
+
+                small.style.transform = 'translate(' + (small_left) + 'px,' + (small_top) + 'px)';
+              
+            }
+        };
+        var end = function (e) {
+            console.log("鼠标弹起")
+            ifBool = false;
+        }
+
+
+
+
+        small.addEventListener("touchstart", start);
+        small.addEventListener("mousedown", start);
+        window.addEventListener("touchmove", move);
+        window.addEventListener("mousemove", move);
+        window.addEventListener("touchend", end);
+        window.addEventListener("mouseup", end);
+
+
+        function getPosition(node) {
+            var left = node.offsetLeft;
+            var top = node.offsetTop;
+            current = node.offsetParent;
+
+            　　
+            while (current != null) {　　
+                left += current.offsetLeft;　　
+                top += current.offsetTop;　　
+                current = current.offsetParent;　　
+            }
+            return {
+                "left": left,
+                "top": top
+            };
+        }
+
+
+    })
+</script>
